@@ -51,7 +51,7 @@ int sh( int argc, char **argv, char **envp )
   {
    getcwd(cwd);
     /* print your prompt */
-	printf("\n%s %s> ", pref, cwd);	//Prints the cwd in the prompt?
+	printf("\n%s [%s]> ", pref, cwd);	//Prints the cwd in the prompt?
     /* get command line and process */
 	char *cmdln;
 	char *temp;
@@ -93,7 +93,8 @@ int sh( int argc, char **argv, char **envp )
      waitpid(pid,NULL,0);
     }
     else {
-     
+     execve("/pwd", arguments);
+     exit(-1);
     }
    }
 

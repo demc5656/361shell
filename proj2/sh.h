@@ -10,7 +10,7 @@ void printenv(char **envp);
 void cd(char *destination);
 void pwd(char* currwd);
 char *prompt();	// asks for new prompt prefix
-char *prompt(char* prefix);	// accepts the new prefix as an arg and returns it?
+char *prompt(char* prefix);	// accepts the new prefix as an arg and returns it? Had to overload.
 
 
 #define PROMPTMAX 32
