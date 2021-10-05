@@ -165,6 +165,12 @@ void list ( char *dir )
 {
   /* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
+  DIR *currDir = opendir(dir);
+  struct dirent *directent;
+  for (directent=readdir(currDir); directent!=NULL; directent=readdir(currDir)) {
+    printf("%s\n", directent->d_name);
+  }
+  closedir(dir);
 } /* list() */
 
 char* prompt() {
