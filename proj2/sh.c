@@ -72,13 +72,13 @@ int sh( int argc, char **argv, char **envp )
 	}	//Got command line???
     /* check for each built in command and implement */
    if (strcmp(*arguments, "which")==0) {
-//    char *report = which(*arguments[1]), pathelement);
-//    printf("%s", report);
-    which(*arguments[1]), pathelement);
+    char *report = which(*arguments[1]), pathlist);
+    printf("%s", report);
+    //which(*arguments[1]), pathlist);
    }
 
    else if (strcmp(*arguments, "where")==0) {
-    //where(*arguments[1], pathelement);
+    where(*arguments[1], pathlist);
    }
 
    else if (strcmp(*arguments, "prompt")==0) {
@@ -87,16 +87,36 @@ int sh( int argc, char **argv, char **envp )
     else (**arguments[1]==NULL)
      pref = prompt();
    }
-   else if (strcmp(*arguments, "pwd")) {
+   else if (strcmp(*arguments, "pwd")==0) {
     pid = fork();
     if (pid) {
      waitpid(pid,NULL,0);
     }
     else {
-     execve("/pwd", arguments);
+     execve(which("pwd", pathlist), arguments);
      exit(-1);
     }
    }
+    else if (strcmp(*arguments, "pid")==0) {
+      int procid = getpid();
+      if (procid==0) {
+        printf("Process ID: %d", pid);
+      }
+      printf("Process ID: %d", procid);
+    }
+    else if (strcmp(*arguments, "cd")==0) {
+      pid = fork();
+      if (pid) {
+        waitpid(pid,NULL,0);
+      }
+      else {
+        execve(which("cd", pathlist), arguments);
+        exit(-1);
+      }
+    }
+    else if (strcmp(*arguments, "list")==0) {
+      list(which(*arguments[1], pathlist));
+    }
 
      /*  else  program to exec */
     {
@@ -115,12 +135,30 @@ char *which(char *command, struct pathelement *pathlist )
 {
    /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
+   pathlist = get_path();
+  while (pathlist) {         // WHICH
+    sprintf(cmd, "%s/gcc", pathlist->element);
+    if (access(cmd, X_OK) == 0) {
+      //printf("[%s]\n", cmd);
+      return cmd;
+      break;
+    }
+    pathlist = pathlist->next;
+  }
 
 } /* which() */
 
 char *where(char *command, struct pathelement *pathlist )
 {
   /* similarly loop through finding all locations of command */
+  pathlist = get_path();
+  while (pathlist) {         // WHERE
+    sprintf(cmd, "%s/gcc", pathlist->element);
+    if (access(cmd, F_OK) == 0)
+      printf("[%s]\n", cmd);
+    pathlist = pathlist->next;
+  }
+  return cmd;
 } /* where() */
 
 void list ( char *dir )
@@ -147,6 +185,6 @@ char* prompt(char* prefix) {
 	return prefix;
 }
 
-void pwd(char* currwd) {
+/*void pwd(char* currwd) {
  printf("\n %s\n", currwd);
-}
+}*/
