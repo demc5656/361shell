@@ -172,13 +172,24 @@ int sh( int argc, char *argv[], char * envp[] )
     }
 
      /*  else  program to exec */
-    {
+    else {
+      char *prog = which(*arguments, pathlist);
+      if (*prog) {
+        pid = fork();
+        if (pid) {
+          waitpid(pid,NULL,0);
+        }
+      }
+      else {
+        execve(which("cd", pathlist), arguments);
+        exit(-1);
+      }
        /* find it */
 	
        /* do fork(), execve() and waitpid() */
 	
-      /* else */
-        /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
+      else
+        fprintf(stderr, "%s: Command not found.\n", args[0]);
     }
   }
   return 0;
@@ -188,30 +199,33 @@ char *which(char *command, struct pathelement *pathlist )
 {
    /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
+   char *comm = "";
    pathlist = get_path();
   while (pathlist) {         // WHICH
-    sprintf(cmd, "%s/gcc", pathlist->element);
-    if (access(cmd, X_OK) == 0) {
+    sprintf(comm, "%s/gcc", pathlist->element);
+    if (access(comm, X_OK) == 0) {
       //printf("[%s]\n", cmd);
-      return cmd;
+      return comm;
       break;
     }
     pathlist = pathlist->next;
   }
+  return NULL;
 
 } /* which() */
 
 char *where(char *command, struct pathelement *pathlist )
 {
   /* similarly loop through finding all locations of command */
+  char *comm = "";
   pathlist = get_path();
   while (pathlist) {         // WHERE
-    sprintf(cmd, "%s/gcc", pathlist->element);
-    if (access(cmd, F_OK) == 0)
+    sprintf(comm, "%s/gcc", pathlist->element);
+    if (access(comm, F_OK) == 0)
       printf("[%s]\n", cmd);
     pathlist = pathlist->next;
   }
-  return cmd;
+  return comm;
 } /* where() */
 
 void list ( char *dir )
