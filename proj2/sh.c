@@ -181,14 +181,22 @@ int sh( int argc, char *argv[], char * envp[] )
       getchar();
     }
     else if (strcmp(*args, "setenv")==1){
+<<<<<<< HEAD
       char *nme;
+=======
+      const char *nme;
+>>>>>>> 86a7da7130ed9bcac73522293ab9f95f8728aa6e
       printf("What do you want your environment to be called?");
       nme = fgets(buffer, BUFFERSIZE , stdin);
       setenvone(nme);
       free(nme);
     }
     else if (strcmp(*args, "setenv")==2){
+<<<<<<< HEAD
       char *nme, *vle;
+=======
+      const char *nme, *vle;
+>>>>>>> 86a7da7130ed9bcac73522293ab9f95f8728aa6e
       printf("What do you want your environment to be called?");
       nme = fgets(buffer, BUFFERSIZE , stdin);
       printf("What do you want its value to be?");
