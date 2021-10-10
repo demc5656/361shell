@@ -72,6 +72,7 @@ int sh( int argc, char *argv[], char * envp[] )
 			temp = strtok(NULL, " ");
 			//arguments[i] = temp;
       args[i] = temp;
+      args[i+1]=NULL;
       //strcpy(hold, temp);
 		}
 	}	//Got command line???
@@ -127,6 +128,13 @@ int sh( int argc, char *argv[], char * envp[] )
 
     else if (strcmp(*args, "exit")==0) {
       go = 0;
+      char *temp;
+      for (int i=MAXARGS; i>=0; i--) {
+        temp = args[i];
+        free(temp);
+      }
+      //free(args);
+      free(prompt);
       exit(0);
     }
 
