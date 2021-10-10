@@ -9,10 +9,10 @@ void list ( char *dir );
 void printenv(char **envp);
 void cd(char *destination);
 void pwd(char* currwd);
-char *prompt();	// asks for new prompt prefix
+char *promptnone(void);	// asks for new prompt prefix
 char *prompt(char* prefix);	// accepts the new prefix as an arg and returns it? Had to overload.
 void killit(int* pidtokill); // Kills a process at a certain process ID location
-void killit(int* SIGNUM, int* pidtokill);// Same as above, but with a sigterm with it
+void killitnow(int* SIGNUM, int* pidtokill);// Same as above, but with a sigterm with it
 
 #define PROMPTMAX 32
 #define MAXARGS 10

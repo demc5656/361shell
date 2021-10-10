@@ -24,9 +24,10 @@ int sh( int argc, char *argv[], char * envp[] )
   char *homedir;
   struct pathelement *pathlist;
   char *cwd;
-  char *pref;
+  //char *pref = calloc(PROMPTMAX, sizeof(char));
+  char * agmt;
 
-  *pref = "";
+  //strcpy(pref, "");
 
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
@@ -49,12 +50,13 @@ int sh( int argc, char *argv[], char * envp[] )
 //  delim = " ";
   while ( go )
   {
-   getcwd(cwd);
+   getcwd(cwd, PATH_MAX+1);
     /* print your prompt */
-	printf("\n%s [%s]> ", pref, cwd);	//Prints the cwd in the prompt?
+	printf("\n%s [%s]> ", prompt, cwd);	//Prints the cwd in the prompt?
     /* get command line and process */
 	char *cmdln;
 	char *temp;
+  char hold[BUFFERSIZE];
 //	char **saveptr;
 	char **arguments; //????????? idk it says arguments are stored in a char**
 	int len;
@@ -66,8 +68,10 @@ int sh( int argc, char *argv[], char * envp[] )
 		strcpy(cmdln, buffer);
 		temp = strtok(cmdln, " ");
 		for (int i=0; temp!=NULL; i++) {
+      strcpy(hold, *arguments[i]);
 			temp = strtok(NULL, " ");
-			*arguments[i] = temp;
+			//*(arguments[i]) = temp;
+      strcpy(hold, temp);
 		}
 	}	//Got command line???
     /* check for each built in command and implement */
@@ -82,10 +86,10 @@ int sh( int argc, char *argv[], char * envp[] )
    }
 
    else if (strcmp(*arguments, "prompt")==0) {
-    if (**arguments[1]!=NULL)
-     pref = prompt(*arguments[1]);
+    if (*arguments[1]!=NULL)
+     prompt = promptwith(*arguments[1]);
     else (*arguments[1]==NULL) {
-     pref = prompt();
+     prompt = promptnone();
     }
    }
    else if (strcmp(*arguments, "pwd")==0) {
@@ -126,7 +130,7 @@ int sh( int argc, char *argv[], char * envp[] )
 
     else if (strcmp(*arguments, "kill")==0){
       int SigNum, toKill;
-      printf("Do you have a SIGNUM? (y/n)")
+      printf("Do you have a SIGNUM? (y/n)");
       if(fgets(buffer, BUFFERSIZE , stdin) == "n"){
         printf("Enter your PID");
         scanf("%d", &toKill);
@@ -145,7 +149,7 @@ int sh( int argc, char *argv[], char * envp[] )
     else if (strcmp(*arguments, "printenv")==0){ //prints whole environment
       int j;
       for(int j = 0; envp[j] != NULL; j++)
-        printf("\n%s", envp[j])
+        printf("\n%s", envp[j]);
       getchar();
     }
     else if (strcmp(*arguments, "printenv")==1){
@@ -158,7 +162,7 @@ int sh( int argc, char *argv[], char * envp[] )
     else if (strcmp(*arguments, "setenv")==0){ //prints whole environment
       int j;
       for(int j = 0; envp[j] != NULL; j++)
-        printf("\n%s", envp[j])
+        printf("\n%s", envp[j]);
       getchar();
     }
     else if (strcmp(*arguments, "setenv")==1){
@@ -241,7 +245,7 @@ void list ( char *dir )
   closedir(dir);
 } /* list() */
 
-char* prompt(void) {
+char* promptnone(void) {
  char *prefix;
  char bufferp[BUFFERSIZE];
  int len;
@@ -255,7 +259,7 @@ char* prompt(void) {
  }
 }
 
-char* prompt(char* prefix) {
+char* promptwith(char* prefix) {
 	return prefix;
 }
 
@@ -263,7 +267,7 @@ void killit(int* pidtokill){
   kill(2, pidtokill);
 }
 
-void killit(int* SIGNUM, int* pidtokill){
+void killitnow(int* SIGNUM, int* pidtokill){
   kill(SIGNUM,pidtokill);
 }
 
