@@ -63,7 +63,7 @@ int sh( int argc, char *argv[], char * envp[] )
 	if (fgets(buffer, BUFFERSIZE , stdin) != NULL) {
 		len =(int) strlen(buffer);
 		buffer[len-1]='\0';
-		strcopy(cmdln, buffer);
+		strcpy(cmdln, buffer);
 		temp = strtok(cmdln, " ");
 		for (int i=0; temp!=NULL; i++) {
 			temp = strtok(NULL, " ");
@@ -72,7 +72,7 @@ int sh( int argc, char *argv[], char * envp[] )
 	}	//Got command line???
     /* check for each built in command and implement */
    if (strcmp(*arguments, "which")==0) {
-    char *report = which(*arguments[1]), pathlist);
+    char *report = which(*arguments[1], pathlist);
     printf("%s", report);
     //which(*arguments[1]), pathlist);
    }
@@ -84,8 +84,9 @@ int sh( int argc, char *argv[], char * envp[] )
    else if (strcmp(*arguments, "prompt")==0) {
     if (**arguments[1]!=NULL)
      pref = prompt(*arguments[1]);
-    else (**arguments[1]==NULL)
+    else (*arguments[1]==NULL) {
      pref = prompt();
+    }
    }
    else if (strcmp(*arguments, "pwd")==0) {
     pid = fork();
@@ -240,7 +241,7 @@ void list ( char *dir )
   closedir(dir);
 } /* list() */
 
-char* prompt() {
+char* prompt(void) {
  char *prefix;
  char bufferp[BUFFERSIZE];
  int len;
@@ -249,7 +250,7 @@ char* prompt() {
  if (fgets(bufferp, BUFFERSIZE , stdin) != NULL) {
   len =(int) strlen(bufferp);
   bufferp[len-1]='\0';
-  strcopy(prefix, bufferp);
+  strcpy(prefix, bufferp);
   return prefix;
  }
 }
@@ -258,11 +259,11 @@ char* prompt(char* prefix) {
 	return prefix;
 }
 
-void kill(int* pidtokill){
+void killit(int* pidtokill){
   kill(2, pidtokill);
 }
 
-void kill(int* SIGNUM, int* pidtokill){
+void killit(int* SIGNUM, int* pidtokill){
   kill(SIGNUM,pidtokill);
 }
 
