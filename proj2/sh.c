@@ -165,7 +165,10 @@ int sh( int argc, char *argv[], char * envp[] )
       getchar();
     }
     else if (strcmp(*args, "printenv")==1){
-       getenv(3);
+      printf("What do you want to search the value for?")
+      char *tstring = fgets(buffer, BUFFERSIZE , stdin);
+      getenv(tstring);
+      free(tstring);
     }
     else if (strcmp(*args, "printenv")>=2){
       fprintf(stderr, "%s", "Invalid input.\n")
@@ -178,11 +181,21 @@ int sh( int argc, char *argv[], char * envp[] )
       getchar();
     }
     else if (strcmp(*args, "setenv")==1){
-      int holderenvir = setenv(3);
-      return holderenvir;
+      const char *nme;
+      printf("What do you want your environment to be called?")
+      nme = fgets(buffer, BUFFERSIZE , stdin);
+      setenvone(nme);
+      free(nme);
     }
     else if (strcmp(*args, "setenv")==2){
-      //the second one is the value of the first??
+      const char *nme, *vle;
+      printf("What do you want your environment to be called?")
+      nme = fgets(buffer, BUFFERSIZE , stdin);
+      printf("What do you want its value to be?")
+      vle = fgets(buffer, BUFFERSIZE , stdin);
+      setenvtwo(nme,vle);
+      free(nme);
+      free(vle);
     }
     else if (strcmp(*args, "setenv")>2){
       fprintf(stderr, "%s", "Invalid input.\n")
@@ -281,6 +294,24 @@ void killit(int* pidtokill){
 
 void killitnow(int* SIGNUM, int* pidtokill){
   kill(*SIGNUM,*pidtokill);
+}
+
+int setenvone(const char *name){
+   char* tempEnv = getenv(name);
+   if(!tempEnv){
+     tempEnv = NULL;
+   }
+
+   return 0;
+}
+
+int setenvtwo(const char *name, const char *value){
+  char* tempEnv = getenv(name);
+  if(!tempEnv){
+    tempEnv = value;
+   }
+
+   return 0;
 }
 
 /*void pwd(char* currwd) {
