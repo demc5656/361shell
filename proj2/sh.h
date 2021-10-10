@@ -1,8 +1,8 @@
-
+//Dara McNally and Donovan Messer
 #include "get_path.h"
 
 int pid;
-int sh( int argc, char **argv, char **envp);
+int sh(int argc, char *argv[], char * envp[] );
 char *which(char *command, struct pathelement *pathlist);
 char *where(char *command, struct pathelement *pathlist);
 void list ( char *dir );

@@ -1,3 +1,5 @@
+//Dara McNally and Donovan Messer
+
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -166,7 +168,7 @@ int sh( int argc, char *argv[], char * envp[] )
        getenv(3);
     }
     else if (strcmp(*args, "printenv")>=2){
-      //print error message
+      fprintf(stderr, "%s", "Invalid input.\n")
     }
 
     else if (strcmp(*args, "setenv")==0){ //prints whole environment
@@ -183,7 +185,7 @@ int sh( int argc, char *argv[], char * envp[] )
       //the second one is the value of the first??
     }
     else if (strcmp(*args, "setenv")>2){
-      //print stderr message
+      fprintf(stderr, "%s", "Invalid input.\n")
     }
 
      /*  else  program to exec */
