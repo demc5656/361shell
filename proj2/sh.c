@@ -25,8 +25,8 @@ int sh( int argc, char *argv[], char * envp[] )
   struct pathelement *pathlist;
   char *cwd;
   //char *pref = calloc(PROMPTMAX, sizeof(char));
-  char * agmt;
-
+  //char * agmt;
+  //char **arguments = calloc(MAXARGS, sizeof(char*));
   //strcpy(pref, "");
 
   uid = getuid();
@@ -58,7 +58,7 @@ int sh( int argc, char *argv[], char * envp[] )
 	char *temp;
   char hold[BUFFERSIZE];
 //	char **saveptr;
-	char **arguments; //????????? idk it says arguments are stored in a char**
+	//char **arguments; //????????? idk it says arguments are stored in a char**
 	int len;
 	char buffer[BUFFERSIZE];
 	fgets(buffer, BUFFERSIZE, stdin);
@@ -70,65 +70,67 @@ int sh( int argc, char *argv[], char * envp[] )
 		for (int i=0; temp!=NULL; i++) {
       //strcpy(hold, *arguments[i]);
 			temp = strtok(NULL, " ");
-			arguments[i] = temp;
+			//arguments[i] = temp;
+      args[i] = temp;
       //strcpy(hold, temp);
 		}
 	}	//Got command line???
     /* check for each built in command and implement */
-   if (strcmp(*arguments, "which")==0) {
-    char *report = which(arguments[1], pathlist);
+   if (strcmp(*args, "which")==0) {
+    char *report = which(args[1], pathlist);
     printf("%s", report);
     //which(*arguments[1]), pathlist);
    }
 
-   else if (strcmp(*arguments, "where")==0) {
-    where(arguments[1], pathlist);
+   else if (strcmp(*args, "where")==0) {
+    where(args[1], pathlist);
    }
 
-   else if (strcmp(*arguments, "prompt")==0) {
-    if (arguments[1]!=NULL)
-     prompt = promptwith(arguments[1]);
-    else (arguments[1]==NULL) {
+   else if (strcmp(*args, "prompt")==0) {
+    if (args[1]!=NULL) {
+     prompt = promptwith(args[1]);
+    }
+    else {
      prompt = promptnone();
     }
    }
-   else if (strcmp(*arguments, "pwd")==0) {
+   else if (strcmp(*args, "pwd")==0) {
     pid = fork();
     if (pid) {
      waitpid(pid,NULL,0);
     }
     else {
-     execve(which("pwd", pathlist), arguments, envp);
+     execve(which("pwd", pathlist), args, envp);
      exit(-1);
     }
    }
-    else if (strcmp(*arguments, "pid")==0) {
+    else if (strcmp(*args, "pid")==0) {
       int procid = getpid();
       if (procid==0) {
         printf("Process ID: %d", pid);
       }
       printf("Process ID: %d", procid);
     }
-    else if (strcmp(*arguments, "cd")==0) {
+    else if (strcmp(*args, "cd")==0) {
       pid = fork();
       if (pid) {
         waitpid(pid,NULL,0);
       }
       else {
-        execve(which("cd", pathlist), arguments, envp);
+        execve(which("cd", pathlist), args, envp);
         exit(-1);
       }
     }
-    else if (strcmp(*arguments, "list")==0) {
-      list(which(*arguments[1], pathlist));
+    else if (strcmp(*args, "list")==0) {
+      list(which(args[1], pathlist));
     }
 
-    else if (strcmp(*arguments, "exit")==0) {
+    else if (strcmp(*args, "exit")==0) {
       go = 0;
-      exit();
+      exit(0);
     }
 
-    else if (strcmp(*arguments, "kill")==0){
+    else if (strcmp(*args, "kill")==0){
       int SigNum, toKill;
       printf("Do you have a SIGNUM? (y/n)");
       if(fgets(buffer, BUFFERSIZE , stdin) == "n"){
@@ -146,47 +148,47 @@ int sh( int argc, char *argv[], char * envp[] )
       }
     }
 
-    else if (strcmp(*arguments, "printenv")==0){ //prints whole environment
+    else if (strcmp(*args, "printenv")==0){ //prints whole environment
       int j;
       for(int j = 0; envp[j] != NULL; j++)
         printf("\n%s", envp[j]);
       getchar();
     }
-    else if (strcmp(*arguments, "printenv")==1){
+    else if (strcmp(*args, "printenv")==1){
        getenv(3);
     }
-    else if (strcmp(*arguments, "printenv")>=2){
+    else if (strcmp(*args, "printenv")>=2){
       //print error message
     }
 
-    else if (strcmp(*arguments, "setenv")==0){ //prints whole environment
+    else if (strcmp(*args, "setenv")==0){ //prints whole environment
       int j;
       for(int j = 0; envp[j] != NULL; j++)
         printf("\n%s", envp[j]);
       getchar();
     }
-    else if (strcmp(*arguments, "setenv")==1){
+    else if (strcmp(*args, "setenv")==1){
       int holderenvir = setenv(3);
       return holderenvir;
     }
-    else if (strcmp(*arguments, "setenv")==2){
+    else if (strcmp(*args, "setenv")==2){
       //the second one is the value of the first??
     }
-    else if (strcmp(*arguments, "setenv")>2){
+    else if (strcmp(*args, "setenv")>2){
       //print stderr message
     }
 
      /*  else  program to exec */
     else {
-      char *prog = which(*arguments, pathlist);
+      char *prog = which(*args, pathlist);
       if (*prog) {
         pid = fork();
         if (pid) {
           waitpid(pid,NULL,0);
         }
       }
-      else {
-        execve(which("cd", pathlist), arguments, envp);
+      else if (which("cd", pathlist)) {
+        execve(which("cd", pathlist), args, envp);
         exit(-1);
       }
        /* find it */
@@ -227,7 +229,7 @@ char *where(char *command, struct pathelement *pathlist )
   while (pathlist) {         // WHERE
     sprintf(comm, "%s/gcc", pathlist->element);
     if (access(comm, F_OK) == 0)
-      printf("[%s]\n", cmd);
+      printf("[%s]\n", comm);
     pathlist = pathlist->next;
   }
   return comm;
@@ -242,7 +244,7 @@ void list ( char *dir )
   for (directent=readdir(currDir); directent!=NULL; directent=readdir(currDir)) {
     printf("%s\n", directent->d_name);
   }
-  closedir(dir);
+  closedir(currDir);
 } /* list() */
 
 char* promptnone(void) {
@@ -264,11 +266,11 @@ char* promptwith(char* prefix) {
 }
 
 void killit(int* pidtokill){
-  kill(2, pidtokill);
+  kill(2, *pidtokill);
 }
 
 void killitnow(int* SIGNUM, int* pidtokill){
-  kill(SIGNUM,pidtokill);
+  kill(*SIGNUM,*pidtokill);
 }
 
 /*void pwd(char* currwd) {
