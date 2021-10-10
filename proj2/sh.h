@@ -13,8 +13,8 @@ char *promptnone(void);	// asks for new prompt prefix
 char *promptwith(char* prefix);	// accepts the new prefix as an arg and returns it? Had to overload.
 void killit(int* pidtokill); // Kills a process at a certain process ID location
 void killitnow(int* SIGNUM, int* pidtokill);// Same as above, but with a sigterm with it
-int setenvone(const char *name); //Makes and Sets an environment to NULL
-int setenvtwo(const char *name, const char *value); //Makes an environment and sets it to value
+int setenvone(char *name); //Makes and Sets an environment to NULL
+int setenvtwo(char *name, char *value); //Makes an environment and sets it to value
 
 #define PROMPTMAX 32
 #define MAXARGS 10

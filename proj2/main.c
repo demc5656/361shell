@@ -8,9 +8,9 @@ void sig_handler(int signal);
 int main( int argc, char **argv, char **envp )
 {
   /* put signal set up stuff here */
-  singal(SIGINT, sig_handler);
-  singal(SIGTSTP, sig_handler);
-  singal(SIGTERM, sig_handler);
+  signal(SIGINT, sig_handler);
+  signal(SIGTSTP, sig_handler);
+  signal(SIGTERM, sig_handler);
   return sh(argc, argv, envp);
 }
 

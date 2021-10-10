@@ -165,13 +165,13 @@ int sh( int argc, char *argv[], char * envp[] )
       getchar();
     }
     else if (strcmp(*args, "printenv")==1){
-      printf("What do you want to search the value for?")
+      printf("What do you want to search the value for?");
       char *tstring = fgets(buffer, BUFFERSIZE , stdin);
       getenv(tstring);
       free(tstring);
     }
     else if (strcmp(*args, "printenv")>=2){
-      fprintf(stderr, "%s", "Invalid input.\n")
+      fprintf(stderr, "%s", "Invalid input.\n");
     }
 
     else if (strcmp(*args, "setenv")==0){ //prints whole environment
@@ -181,24 +181,24 @@ int sh( int argc, char *argv[], char * envp[] )
       getchar();
     }
     else if (strcmp(*args, "setenv")==1){
-      const char *nme;
-      printf("What do you want your environment to be called?")
+      char *nme;
+      printf("What do you want your environment to be called?");
       nme = fgets(buffer, BUFFERSIZE , stdin);
       setenvone(nme);
       free(nme);
     }
     else if (strcmp(*args, "setenv")==2){
-      const char *nme, *vle;
-      printf("What do you want your environment to be called?")
+      char *nme, *vle;
+      printf("What do you want your environment to be called?");
       nme = fgets(buffer, BUFFERSIZE , stdin);
-      printf("What do you want its value to be?")
+      printf("What do you want its value to be?");
       vle = fgets(buffer, BUFFERSIZE , stdin);
       setenvtwo(nme,vle);
       free(nme);
       free(vle);
     }
     else if (strcmp(*args, "setenv")>2){
-      fprintf(stderr, "%s", "Invalid input.\n")
+      fprintf(stderr, "%s", "Invalid input.\n");
     }
 
      /*  else  program to exec */
@@ -296,7 +296,7 @@ void killitnow(int* SIGNUM, int* pidtokill){
   kill(*SIGNUM,*pidtokill);
 }
 
-int setenvone(const char *name){
+int setenvone(char *name){
    char* tempEnv = getenv(name);
    if(!tempEnv){
      tempEnv = NULL;
@@ -305,7 +305,7 @@ int setenvone(const char *name){
    return 0;
 }
 
-int setenvtwo(const char *name, const char *value){
+int setenvtwo(char *name, char *value){
   char* tempEnv = getenv(name);
   if(!tempEnv){
     tempEnv = value;
