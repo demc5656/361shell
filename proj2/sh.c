@@ -68,27 +68,27 @@ int sh( int argc, char *argv[], char * envp[] )
 		strcpy(cmdln, buffer);
 		temp = strtok(cmdln, " ");
 		for (int i=0; temp!=NULL; i++) {
-      strcpy(hold, *arguments[i]);
+      //strcpy(hold, *arguments[i]);
 			temp = strtok(NULL, " ");
-			//*(arguments[i]) = temp;
-      strcpy(hold, temp);
+			arguments[i] = temp;
+      //strcpy(hold, temp);
 		}
 	}	//Got command line???
     /* check for each built in command and implement */
    if (strcmp(*arguments, "which")==0) {
-    char *report = which(*arguments[1], pathlist);
+    char *report = which(arguments[1], pathlist);
     printf("%s", report);
     //which(*arguments[1]), pathlist);
    }
 
    else if (strcmp(*arguments, "where")==0) {
-    where(*arguments[1], pathlist);
+    where(arguments[1], pathlist);
    }
 
    else if (strcmp(*arguments, "prompt")==0) {
-    if (*arguments[1]!=NULL)
-     prompt = promptwith(*arguments[1]);
-    else (*arguments[1]==NULL) {
+    if (arguments[1]!=NULL)
+     prompt = promptwith(arguments[1]);
+    else (arguments[1]==NULL) {
      prompt = promptnone();
     }
    }
@@ -98,7 +98,7 @@ int sh( int argc, char *argv[], char * envp[] )
      waitpid(pid,NULL,0);
     }
     else {
-     execve(which("pwd", pathlist), arguments);
+     execve(which("pwd", pathlist), arguments, envp);
      exit(-1);
     }
    }
@@ -115,7 +115,7 @@ int sh( int argc, char *argv[], char * envp[] )
         waitpid(pid,NULL,0);
       }
       else {
-        execve(which("cd", pathlist), arguments);
+        execve(which("cd", pathlist), arguments, envp);
         exit(-1);
       }
     }
@@ -124,7 +124,7 @@ int sh( int argc, char *argv[], char * envp[] )
     }
 
     else if (strcmp(*arguments, "exit")==0) {
-      go = FALSE;
+      go = 0;
       exit();
     }
 
@@ -186,7 +186,7 @@ int sh( int argc, char *argv[], char * envp[] )
         }
       }
       else {
-        execve(which("cd", pathlist), arguments);
+        execve(which("cd", pathlist), arguments, envp);
         exit(-1);
       }
        /* find it */
