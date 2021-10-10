@@ -13,7 +13,7 @@
 
 #define BUFFERSIZE 128
 
-int sh( int argc, char **argv, char **envp )
+int sh( int argc, char *argv[], char * envp[] )
 {
   char *prompt = calloc(PROMPTMAX, sizeof(char));
   char *commandline = calloc(MAX_CANON, sizeof(char));
@@ -118,6 +118,59 @@ int sh( int argc, char **argv, char **envp )
       list(which(*arguments[1], pathlist));
     }
 
+    else if (strcmp(*arguments, "exit")==0) {
+      go = FALSE;
+      exit();
+    }
+
+    else if (strcmp(*arguments, "kill")==0){
+      int SigNum, toKill;
+      printf("Do you have a SIGNUM? (y/n)")
+      if(fgets(buffer, BUFFERSIZE , stdin) == "n"){
+        printf("Enter your PID");
+        scanf("%d", &toKill);
+        kill(2, toKill);
+      }
+      else{
+        printf("Enter your SIGNUM");
+        scanf("%d", &SigNum);
+        SigNum= SigNum * -1;
+        printf("Enter your PID");
+        scanf("%d", &toKill);
+        kill(SigNum, toKill);
+      }
+    }
+
+    else if (strcmp(*arguments, "printenv")==0){ //prints whole environment
+      int j;
+      for(int j = 0; envp[j] != NULL; j++)
+        printf("\n%s", envp[j])
+      getchar();
+    }
+    else if (strcmp(*arguments, "printenv")==1){
+       getenv(3);
+    }
+    else if (strcmp(*arguments, "printenv")>=2){
+      //print error message
+    }
+
+    else if (strcmp(*arguments, "setenv")==0){ //prints whole environment
+      int j;
+      for(int j = 0; envp[j] != NULL; j++)
+        printf("\n%s", envp[j])
+      getchar();
+    }
+    else if (strcmp(*arguments, "setenv")==1){
+      int holderenvir = setenv(3);
+      return holderenvir;
+    }
+    else if (strcmp(*arguments, "setenv")==2){
+      //the second one is the value of the first??
+    }
+    else if (strcmp(*arguments, "setenv")>2){
+      //print stderr message
+    }
+
      /*  else  program to exec */
     {
        /* find it */
@@ -189,6 +242,14 @@ char* prompt() {
 
 char* prompt(char* prefix) {
 	return prefix;
+}
+
+void kill(int* pidtokill){
+  kill(2, pidtokill);
+}
+
+void kill(int* SIGNUM, int* pidtokill){
+  kill(SIGNUM,pidtokill);
 }
 
 /*void pwd(char* currwd) {
