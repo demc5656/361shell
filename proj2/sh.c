@@ -21,6 +21,7 @@ int sh( int argc, char *argv[], char * envp[] )
   char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
+  //args[1] = NULL;
   int uid, i, status, argsct, go = 1;
   struct passwd *password_entry;
   char *homedir;
@@ -56,7 +57,7 @@ int sh( int argc, char *argv[], char * envp[] )
     /* print your prompt */
 	printf("\n%s [%s]> ", prompt, cwd);	//Prints the cwd in the prompt?
     /* get command line and process */
-	char *cmdln;
+	//char *cmdln;
 	char *temp;
   char hold[BUFFERSIZE];
 //	char **saveptr;
@@ -67,8 +68,8 @@ int sh( int argc, char *argv[], char * envp[] )
 	if (fgets(buffer, BUFFERSIZE , stdin) != NULL) {
 		len =(int) strlen(buffer);
 		buffer[len-1]='\0';
-		strcpy(cmdln, buffer);
-		temp = strtok(cmdln, " ");
+		strcpy(commandline, buffer);
+		temp = strtok(commandline, " ");
 		for (int i=0; temp!=NULL; i++) {
       //strcpy(hold, *arguments[i]);
 			temp = strtok(NULL, " ");
@@ -131,7 +132,8 @@ int sh( int argc, char *argv[], char * envp[] )
     else if (strcmp(*args, "exit")==0) {
       go = 0;
       char *temp;
-      for (int i=MAXARGS; i>=0; i--) {
+      
+      for (int i=0; args[i]; i++) {
         temp = args[i];
         free(temp);
       }
