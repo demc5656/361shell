@@ -21,12 +21,15 @@ int sh( int argc, char *argv[], char * envp[] )
   char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
-  args[0] = NULL;
+  for (int i=0; i<MAXARGS; i++) {
+    args[i] = NULL;
+  }
+  //args[0] = NULL;
   int uid, i, status, argsct, go = 1;
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
-  char *cwd;
+  char *cwd = NULL;
   //char *pref = calloc(PROMPTMAX, sizeof(char));
   //char * agmt;
   //char **arguments = calloc(MAXARGS, sizeof(char*));
@@ -64,8 +67,8 @@ int sh( int argc, char *argv[], char * envp[] )
 	//char **arguments; //????????? idk it says arguments are stored in a char**
 	int len;
 	char buffer[BUFFERSIZE];
-	//fgets(buffer, BUFFERSIZE, stdin);
-  //fgets(buffer, BUFFERSIZE, stdin);
+	fgets(buffer, BUFFERSIZE, stdin);
+  fgets(buffer, BUFFERSIZE, stdin);
 	if (fgets(buffer, BUFFERSIZE , stdin) != NULL) {
 		len =(int) strlen(buffer);
 		buffer[len-1]='\0';
@@ -139,8 +142,6 @@ int sh( int argc, char *argv[], char * envp[] )
         free(temp);
       }
       //free(args);
-      free(cwd);
-      free(commandline);
       free(prompt);
       exit(0);
     }
