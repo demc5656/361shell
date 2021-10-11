@@ -21,7 +21,7 @@ int sh( int argc, char *argv[], char * envp[] )
   char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
-  //args[1] = NULL;
+  args[0] = NULL;
   int uid, i, status, argsct, go = 1;
   struct passwd *password_entry;
   char *homedir;
@@ -53,7 +53,7 @@ int sh( int argc, char *argv[], char * envp[] )
 //  delim = " ";
   while ( go )
   {
-   getcwd(cwd, PATH_MAX+1);
+   cwd = getcwd(cwd, PATH_MAX+1);
     /* print your prompt */
 	printf("\n%s [%s]> ", prompt, cwd);	//Prints the cwd in the prompt?
     /* get command line and process */
@@ -64,7 +64,8 @@ int sh( int argc, char *argv[], char * envp[] )
 	//char **arguments; //????????? idk it says arguments are stored in a char**
 	int len;
 	char buffer[BUFFERSIZE];
-	fgets(buffer, BUFFERSIZE, stdin);
+	//fgets(buffer, BUFFERSIZE, stdin);
+  //fgets(buffer, BUFFERSIZE, stdin);
 	if (fgets(buffer, BUFFERSIZE , stdin) != NULL) {
 		len =(int) strlen(buffer);
 		buffer[len-1]='\0';
@@ -133,11 +134,13 @@ int sh( int argc, char *argv[], char * envp[] )
       go = 0;
       char *temp;
       
-      for (int i=0; args[i]; i++) {
+      for (int i=0; i<MAXARGS; i++) {
         temp = args[i];
         free(temp);
       }
       //free(args);
+      free(cwd);
+      free(commandline);
       free(prompt);
       exit(0);
     }
