@@ -86,6 +86,7 @@ int sh( int argc, char *argv[], char * envp[] )
 		}
 	}	//Got command line???
     /* check for each built in command and implement */
+   if (args[1]!=NULL && args[1]!="") {
    if (strcmp(*args, "which")==0) {
     char *report = which(args[1], pathlist);
     printf("%s", report);
@@ -144,7 +145,14 @@ int sh( int argc, char *argv[], char * envp[] )
         free(temp);
       }
       //free(args);
+      //free(path);
+      free(commandline);
       free(prompt);
+      struct pathelement *tp = pathlist;
+      for (; tp; tp = pathlist->next) {
+        pathlist = pathlist->next;
+        free(tp);
+      }
       exit(0);
     }
 
@@ -210,6 +218,7 @@ int sh( int argc, char *argv[], char * envp[] )
     else if (strcmp(*args, "setenv")>2){
       fprintf(stderr, "%s", "Invalid input.\n");
     }
+   }
 
      /*  else  program to exec */
     else {
