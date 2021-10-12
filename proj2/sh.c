@@ -9,6 +9,11 @@ faulting are lines I pulled directly off my perfectly working proj_1a.
 I do not know what is going wrong and I don't know how to fix it and I've
 spent 6 hours trying to figure it out to no avail.
 */
+/*
+Update: I got prompt with an argument to work kinda.
+pwd seems to work.
+Exit doesn't seg fault  s e e m i n g l y.
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -27,10 +32,10 @@ spent 6 hours trying to figure it out to no avail.
 
 int sh( int argc, char *argv[], char * envp[] )
 {
-  char *prompt = malloc(PROMPTMAX*sizeof(char));
-  char *commandline = malloc(MAX_CANON*sizeof(char));
+  char *prompt = (char *) malloc(PROMPTMAX*sizeof(char));
+  char *commandline = (char *) malloc(MAX_CANON*sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
-  char **args = malloc(MAXARGS*sizeof(char*));
+  char **args = (char **) malloc(MAXARGS*sizeof(char*));
   /*
   for (int i=0; i<MAXARGS; i++) {
     args[i] = NULL;
@@ -82,12 +87,12 @@ int sh( int argc, char *argv[], char * envp[] )
   //arg=fgets(commandline, MAX_CANON, stdin);
   //fgets(commandline, MAX_CANON, stdin);
   if (fgets(buffer, BUFFERSIZE, stdin)!=NULL) {
+      //printf("step1");
     len =(int) strlen(buffer);
     buffer[len-1]='\0';
     strcpy(commandline, buffer);
-    strcpy(arg, buffer);
+    //strcpy(arg, buffer);
   }
-  printf("step1");
 	//fgets(buffer, BUFFERSIZE, stdin);
   //fgets(buffer, BUFFERSIZE, stdin);
   /*
@@ -104,7 +109,7 @@ int sh( int argc, char *argv[], char * envp[] )
   }
   */
   
-	if (arg!=NULL) {
+	if (commandline!=NULL) {
 		//len =(int) strlen(commandline);
 		//commandline[len-1]='\0';
 		//strcpy(arg, commandline);
@@ -120,31 +125,32 @@ int sh( int argc, char *argv[], char * envp[] )
 		}
 	}	//Got command line???
     /* check for each built in command and implement */
-   if (args[1]!=NULL && args[1]!="") {
+   if (args[0]!=NULL) {
    if (strcmp(*args, "which")==0) {
-     printf("which");
+     //printf("which");
     char *report = which(args[1], pathlist);
     printf("%s", report);
     //which(*arguments[1]), pathlist);
    }
 
    else if (strcmp(*args, "where")==0) {
-     printf("where");
+     //printf("where");
     where(args[1], pathlist);
    }
 
    else if (strcmp(*args, "prompt")==0) {
-     printf("prompt");
+     //printf("prompt");
     if (args[1]!=NULL) {
      prompt = promptwith(args[1]);
     }
     else {
-     printf("prompt2");
+     //printf("prompt2");
      prompt = promptnone();
     }
    }
    else if (strcmp(*args, "pwd")==0) {
-     printf("pwd");
+     //printf("pwd");
+     /*
     pid = fork();
     if (pid) {
      waitpid(pid,NULL,0);
@@ -153,9 +159,11 @@ int sh( int argc, char *argv[], char * envp[] )
      execve(which("pwd", pathlist), args, envp);
      exit(-1);
     }
+    */
+    printf("\n%s\n", cwd);
    }
     else if (strcmp(*args, "pid")==0) {
-      printf("pid");
+      //printf("pid");
       int procid = getpid();
       if (procid==0) {
         printf("Process ID: %d", pid);
@@ -163,7 +171,7 @@ int sh( int argc, char *argv[], char * envp[] )
       printf("Process ID: %d", procid);
     }
     else if (strcmp(*args, "cd")==0) {
-      printf("cd");
+      //printf("cd");
       pid = fork();
       if (pid) {
         waitpid(pid,NULL,0);
@@ -174,12 +182,12 @@ int sh( int argc, char *argv[], char * envp[] )
       }
     }
     else if (strcmp(*args, "list")==0) {
-      printf("list");
+      //printf("list");
       list(which(args[1], pathlist));
     }
 
     else if (strcmp(*args, "exit")==0) {
-      printf("exit");
+      //printf("exit");
       go = 0;
       char *temp;
       
@@ -201,7 +209,7 @@ int sh( int argc, char *argv[], char * envp[] )
     }
 
     else if (strcmp(*args, "kill")==0){
-      printf("kill");
+      //printf("kill");
       int SigNum, toKill;
       printf("Do you have a SIGNUM? (y/n)");
       arg = fgets(commandline, MAX_CANON , stdin);
@@ -221,33 +229,33 @@ int sh( int argc, char *argv[], char * envp[] )
     }
 
     else if (strcmp(*args, "printenv")==0){ //prints whole environment
-    printf("printenv");
+    //printf("printenv");
       int j;
       for(int j = 0; envp[j] != NULL; j++)
         printf("\n%s", envp[j]);
       getchar();
     }
     else if (strcmp(*args, "printenv")==1){
-      printf("penv1");
+      //printf("penv1");
       printf("What do you want to search the value for?");
       char *tstring = fgets(commandline, MAX_CANON , stdin);
       getenv(tstring);
       free(tstring);
     }
     else if (strcmp(*args, "printenv")>=2){
-      printf("penv2");
+      //printf("penv2");
       fprintf(stderr, "%s", "Invalid input.\n");
     }
 
     else if (strcmp(*args, "setenv")==0){ //prints whole environment
-    printf("senv");
+    //printf("senv");
       int j;
       for(int j = 0; envp[j] != NULL; j++)
         printf("\n%s", envp[j]);
       getchar();
     }
     else if (strcmp(*args, "setenv")==1){
-      printf("senv1");
+      //printf("senv1");
       char *nme;
       //const char *nme;
       printf("What do you want your environment to be called?");
@@ -256,7 +264,7 @@ int sh( int argc, char *argv[], char * envp[] )
       free(nme);
     }
     else if (strcmp(*args, "setenv")==2){
-      printf("senv2");
+      //printf("senv2");
       char *nme, *vle;
       //const char *nme, *vle;
       printf("What do you want your environment to be called?");
@@ -268,14 +276,14 @@ int sh( int argc, char *argv[], char * envp[] )
       free(vle);
     }
     else if (strcmp(*args, "setenv")>2){
-      printf("senv3");
+      //printf("senv3");
       fprintf(stderr, "%s", "Invalid input.\n");
     }
    }
 
      /*  else  program to exec */
     else {
-      printf("why are oyu here");
+      //printf("why are oyu here");
       char *prog = which(*args, pathlist);
       if (*prog) {
         pid = fork();
@@ -284,7 +292,7 @@ int sh( int argc, char *argv[], char * envp[] )
         }
       }
       else if (which("cd", pathlist)) {
-        printf("cd??");
+        //printf("cd??");
         execve(which("cd", pathlist), args, envp);
         exit(-1);
       }
@@ -348,8 +356,8 @@ char* promptnone(void) {
  char *prefix;
  char bufferp[BUFFERSIZE];
  int len;
- printf("What would you like your new prefix to be?> ");
- fgets(bufferp, BUFFERSIZE, stdin);
+ printf("\nWhat would you like your new prefix to be?> ");
+ //fgets(bufferp, BUFFERSIZE, stdin);
  if (fgets(bufferp, BUFFERSIZE , stdin) != NULL) {
   len =(int) strlen(bufferp);
   bufferp[len-1]='\0';
